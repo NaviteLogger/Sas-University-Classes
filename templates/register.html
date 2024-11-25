@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formularz Rejestracji</title>
+    <link href="{{ url_for('static', filename='styles2.css') }}" rel="stylesheet">
+</head>
+
+<body>
+    <h1>Formularz Rejestracji</h1>
+    <form class="user-form" id="registrationForm" method="POST">
+        <div class="form-group">
+            <label for="name">Imię:</label>
+            <input type="text" id="name" name="name" placeholder="Podaj swoje imię" required>
+        </div>
+        <div class="form-group">
+            <label for="surname">Nazwisko:</label>
+            <input type="text" id="surname" name="surname" placeholder="Podaj swoje nazwisko" required>
+        </div>
+        <div class="form-group">
+            <label for="address">Adres:</label>
+            <input type="text" id="address" name="address" placeholder="Podaj swój adres" required>
+        </div>
+        <div class="form-group">
+            <label for="housing">Mieszkanie/dom:</label>
+            <select id="housing" name="housing" required>
+                <option value="dom">Dom</option>
+                <option value="mieszkanie">Mieszkanie</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="phone">Numer telefonu:</label>
+            <input type="tel" id="phone" name="phone" placeholder="Podaj numer telefonu" required>
+        </div>
+        <div class="form-group">
+            <label for="dob">Data urodzenia:</label>
+            <input type="date" id="dob" name="dob" required>
+        </div>
+        <div class="form-group">
+            <label for="license">Czy posiada prawo jazdy:</label>
+            <select id="license" name="license" required>
+                <option value="tak">Tak</option>
+                <option value="nie">Nie</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="password">Hasło:</label>
+            <input type="password" id="password" name="password" placeholder="Ustaw hasło" required>
+        </div>
+        <div class="form-group">
+            <label for="gender">Płeć:</label>
+            <select id="gender" name="gender" required>
+                <option value="kobieta">Kobieta</option>
+                <option value="mężczyzna">Mężczyzna</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="city">Miasto:</label>
+            <input type="text" id="city" name="city" placeholder="Podaj swoje miasto" required>
+        </div>
+        <div class="form-group">
+            <label for="country">Państwo:</label>
+            <input type="text" id="country" name="country" placeholder="Podaj swoje państwo" required>
+        </div>
+        <button type="submit">Zarejestruj się</button>
+    </form>
+</body>
+
+</html>
