@@ -6,8 +6,8 @@ networks:
     name: future-devs
 services:
   app:
-    hostname: sas-univeristy-classes
-    container_name: sas-univeristy-classes
+    hostname: sas-university-classes
+    container_name: sas-university-classes
     volumes:
       - ../../:/workspaces
     build:

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>O Aplikacji</title>
+    <link href="{{ url_for('static', filename='styles2.css') }}" rel="stylesheet">
+    <style>
+        pre {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border: 1px solid #ddd;
+            overflow-x: auto;
+        }
+
+        code {
+            font-family: monospace;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>O Aplikacji</h1>
+    <p>Ta aplikacja jest przykładem prostego systemu logowania, rejestracji i podsumowania formularzy.</p>
+    <p>Zbudowana z użyciem Flask, HTML, CSS i sesji w pamięci RAM.</p>
+    <h2>Kod Źródłowy Aplikacji</h2>
+    <pre><code>{{ code }}</code></pre>
+    <a href="{{ url_for('home') }}">Powrót na Stronę Główną</a>
+</body>
+
+</html>
