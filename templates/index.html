@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aplikacja CRUD</title>
+    <title>CRUD Application</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -152,15 +152,18 @@
 </head>
 
 <body>
-    <h1>Zarządzanie użytkownikami</h1>
+    <header>
+        <h1>User Management System</h1>
+    </header>
+
     <table>
         <thead>
             <tr>
                 <th>ID</th>
-                <th>Imię</th>
-                <th>Nazwisko</th>
-                <th>Wiek</th>
-                <th>Akcja</th>
+                <th>Name</th>
+                <th>Surname</th>
+                <th>Age</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -176,30 +179,35 @@
                     <td><input type="number" name="age" value="{{ user[3] }}" data-original-value="{{ user[3] }}"
                             disabled></td>
                     <td>
-                        <button type="button" id="edit-btn-{{ user[0] }}"
-                            onclick="enableEdit({{ user[0] }})">Edytuj</button>
-                        <button type="submit" id="confirm-btn-{{ user[0] }}" style="display:none;">Potwierdz</button>
-                        <button type="button" id="cancel-btn-{{ user[0] }}" onclick="cancelEdit({{ user[0] }})"
-                            style="display:none;">Anuluj</button>
+                        <button type="button" id="edit-btn-{{ user[0] }}" class="edit"
+                            onclick="enableEdit({{ user[0] }})">Edit</button>
+                        <button type="submit" id="confirm-btn-{{ user[0] }}" class="confirm"
+                            style="display:none;">Confirm</button>
+                        <button type="button" id="cancel-btn-{{ user[0] }}" class="cancel"
+                            onclick="cancelEdit({{ user[0] }})" style="display:none;">Cancel</button>
                     </td>
                 </form>
                 <!-- Delete Form -->
                 <td>
                     <form method="POST" action="{{ url_for('delete_user', user_id=user[0]) }}">
-                        <button type="submit">Usuń</button>
+                        <button type="submit" class="delete">Delete</button>
                     </form>
                 </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
-    <h2>Dodawanie nowego użytkownika</h2>
-    <form method="POST" action="{{ url_for('add_user') }}">
+
+    <form method="POST" action="{{ url_for('add_user') }}" class="add-user">
         <input type="text" name="name" placeholder="Name" required>
         <input type="text" name="surname" placeholder="Surname" required>
         <input type="number" name="age" placeholder="Age" required>
-        <button type="submit">Dodaj użytkownika>
+        <button type="submit">Add User</button>
     </form>
+
+    <footer>
+        &copy; 2024 CRUD Application - Built with Flask
+    </footer>
 </body>
 
 </html>
