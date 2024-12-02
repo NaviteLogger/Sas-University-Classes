@@ -1,95 +1,86 @@
-from flask import Flask, render_template, request, redirect, session, url_for
+from flask import Flask, request, jsonify, render_template, redirect, url_for
+import sqlite3
 
 app = Flask(__name__)
-app.secret_key = 'supersecretkey'  # For session management
 
-# Hardcoded credentials
-USERNAME = 'username'
-PASSWORD = 'password'
+# Database setup
+
+
+def init_db():
+    conn = sqlite3.connect('users.db')
+    cursor = conn.cursor()
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            surname TEXT NOT NULL,
+            age INTEGER NOT NULL
+        )
+    ''')
+    # Insert sample users if table is empty
+    cursor.execute('SELECT COUNT(*) FROM users')
+    if cursor.fetchone()[0] == 0:
+        sample_users = [
+            ('Alice', 'Smith', 25),
+            ('Bob', 'Johnson', 30),
+            ('Charlie', 'Brown', 35)
+        ]
+        cursor.executemany(
+            'INSERT INTO users (name, surname, age) VALUES (?, ?, ?)', sample_users)
+    conn.commit()
+    conn.close()
+
+
+init_db()
 
 
 @app.route('/')
-def home():
-    return redirect(url_for('login'))
+def index():
+    conn = sqlite3.connect('users.db')
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM users')
+    users = cursor.fetchall()
+    conn.close()
+    return render_template('index.html', users=users)
 
 
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    endpoints = [
-        {'path': '/', 'description': 'Home'},
-        {'path': '/login', 'description': 'Logowanie'},
-        {'path': '/register', 'description': 'Rejestracja'},
-        {'path': '/summary', 'description': 'Podsumowanie'},
-        {'path': '/about', 'description': 'Plik app.py'},
-        {'path': '/logout', 'description': 'Wylogowanie'},
-    ]
-
-    if request.method == 'POST':
-        username = request.form.get('username')
-        password = request.form.get('password')
-
-        if username == USERNAME and password == PASSWORD:
-            session['logged_in'] = True
-            return redirect(url_for('register'))
-        else:
-            return render_template('login.html', error='Invalid username or password', endpoints=endpoints)
-
-    return render_template('login.html', endpoints=endpoints)
+@app.route('/add_user', methods=['POST'])
+def add_user():
+    name = request.form['name']
+    surname = request.form['surname']
+    age = request.form['age']
+    conn = sqlite3.connect('users.db')
+    cursor = conn.cursor()
+    cursor.execute(
+        'INSERT INTO users (name, surname, age) VALUES (?, ?, ?)', (name, surname, int(age)))
+    conn.commit()
+    conn.close()
+    return redirect(url_for('index'))
 
 
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    if 'logged_in' not in session or not session['logged_in']:
-        return redirect(url_for('login'))
-
-    if request.method == 'POST':
-        # Collect form data
-        form_data = {
-            'name': request.form.get('name'),
-            'surname': request.form.get('surname'),
-            'address': request.form.get('address'),
-            'housing': request.form.get('housing'),
-            'phone': request.form.get('phone'),
-            'dob': request.form.get('dob'),
-            'license': request.form.get('license'),
-            'password': request.form.get('password'),
-            'gender': request.form.get('gender'),
-            'city': request.form.get('city'),
-            'country': request.form.get('country'),
-        }
-        # Store data temporarily in session
-        session['form_data'] = form_data
-        return redirect(url_for('summary'))
-
-    return render_template('register.html')
+@app.route('/update_user/<int:user_id>', methods=['POST'])
+def update_user(user_id):
+    name = request.form['name']
+    surname = request.form['surname']
+    age = request.form['age']
+    conn = sqlite3.connect('users.db')
+    cursor = conn.cursor()
+    cursor.execute('UPDATE users SET name=?, surname=?, age=? WHERE id=?',
+                   (name, surname, int(age), user_id))
+    conn.commit()
+    conn.close()
+    return redirect(url_for('index'))
 
 
-@app.route('/about')
-def about():
-    try:
-        with open(__file__, 'r') as f:
-            code = f.read()
-    except Exception as e:
-        code = f"Unable to load code: {e}"
-
-    return render_template('about.html', code=code)
-
-
-@app.route('/summary', methods=['GET'])
-def summary():
-    if 'logged_in' not in session or not session['logged_in']:
-        return redirect(url_for('login'))
-
-    form_data = session.get('form_data', {})
-    return render_template('summary.html', form_data=form_data)
-
-
-@app.route('/logout')
-def logout():
-    session.pop('logged_in', None)
-    session.pop('form_data', None)
-    return redirect(url_for('login'))
+@app.route('/delete_user/<int:user_id>', methods=['POST'])
+def delete_user(user_id):
+    conn = sqlite3.connect('users.db')
+    cursor = conn.cursor()
+    cursor.execute('DELETE FROM users WHERE id=?', (user_id,))
+    conn.commit()
+    conn.close()
+    return redirect(url_for('index'))
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=True)
+    app.run(debug=True)

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRUD Application</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid black;
+        }
+
+        th,
+        td {
+            padding: 8px;
+            text-align: left;
+        }
+
+        button {
+            margin: 2px;
+        }
+    </style>
+    <script>
+        function enableEdit(rowId) {
+            const row = document.getElementById(`row-${rowId}`);
+            const inputs = row.querySelectorAll('input');
+            inputs.forEach(input => input.disabled = false);
+            document.getElementById(`edit-btn-${rowId}`).style.display = 'none';
+            document.getElementById(`confirm-btn-${rowId}`).style.display = 'inline';
+            document.getElementById(`cancel-btn-${rowId}`).style.display = 'inline';
+        }
+
+        function cancelEdit(rowId) {
+            const row = document.getElementById(`row-${rowId}`);
+            const inputs = row.querySelectorAll('input');
+            inputs.forEach(input => {
+                input.value = input.dataset.originalValue;
+                input.disabled = true;
+            });
+            document.getElementById(`edit-btn-${rowId}`).style.display = 'inline';
+            document.getElementById(`confirm-btn-${rowId}`).style.display = 'none';
+            document.getElementById(`cancel-btn-${rowId}`).style.display = 'none';
+        }
+    </script>
+</head>
+
+<body>
+    <h1>User Management</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Surname</th>
+                <th>Age</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr id="row-{{ user[0] }}">
+                <form method="POST" action="{{ url_for('update_user', user_id=user[0]) }}">
+                    <td>{{ user[0] }}</td>
+                    <td><input type="text" name="name" value="{{ user[1] }}" data-original-value="{{ user[1] }}"
+                            disabled></td>
+                    <td><input type="text" name="surname" value="{{ user[2] }}" data-original-value="{{ user[2] }}"
+                            disabled></td>
+                    <td><input type="number" name="age" value="{{ user[3] }}" data-original-value="{{ user[3] }}"
+                            disabled></td>
+                    <td>
+                        <button type="button" id="edit-btn-{{ user[0] }}"
+                            onclick="enableEdit({{ user[0] }})">Edit</button>
+                        <button type="submit" id="confirm-btn-{{ user[0] }}" style="display:none;">Confirm</button>
+                        <button type="button" id="cancel-btn-{{ user[0] }}" onclick="cancelEdit({{ user[0] }})"
+                            style="display:none;">Cancel</button>
+                        <form method="POST" action="{{ url_for('delete_user', user_id=user[0]) }}"
+                            style="display:inline;">
+                            <button type="submit">Delete</button>
+                        </form>
+                    </td>
+                </form>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <h2>Add New User</h2>
+    <form method="POST" action="{{ url_for('add_user') }}">
+        <input type="text" name="name" placeholder="Name" required>
+        <input type="text" name="surname" placeholder="Surname" required>
+        <input type="number" name="age" placeholder="Age" required>
+        <button type="submit">Add User</button>
+    </form>
+</body>
+
+</html>
