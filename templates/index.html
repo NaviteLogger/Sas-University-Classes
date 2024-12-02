@@ -4,27 +4,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CRUD Application</title>
+    <title>Aplikacja CRUD</title>
     <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+
+        header {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 1rem 0;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 2rem;
+        }
+
         table {
-            width: 100%;
+            width: 80%;
+            margin: 2rem auto;
             border-collapse: collapse;
+            background-color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
         table,
         th,
         td {
-            border: 1px solid black;
+            border: 1px solid #ddd;
         }
 
         th,
         td {
-            padding: 8px;
+            padding: 10px;
             text-align: left;
         }
 
+        th {
+            background-color: #f4f4f9;
+            color: #4CAF50;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
         button {
-            margin: 2px;
+            padding: 6px 12px;
+            margin: 0 2px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        button.edit {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        button.confirm {
+            background-color: #007BFF;
+            color: white;
+        }
+
+        button.cancel {
+            background-color: #FFC107;
+            color: white;
+        }
+
+        button.delete {
+            background-color: #DC3545;
+            color: white;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        form.add-user {
+            width: 80%;
+            margin: 2rem auto;
+            display: flex;
+            justify-content: space-between;
+            background-color: white;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        form.add-user input {
+            width: calc(25% - 10px);
+            padding: 8px;
+            font-size: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        form.add-user button {
+            width: calc(20% - 10px);
+            background-color: #4CAF50;
+            color: white;
+            font-size: 1rem;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            padding: 1rem 0;
+            background-color: #4CAF50;
+            color: white;
         }
     </style>
     <script>
@@ -52,20 +152,21 @@
 </head>
 
 <body>
-    <h1>User Management</h1>
+    <h1>Zarządzanie użytkownikami</h1>
     <table>
         <thead>
             <tr>
                 <th>ID</th>
-                <th>Name</th>
-                <th>Surname</th>
-                <th>Age</th>
-                <th>Actions</th>
+                <th>Imię</th>
+                <th>Nazwisko</th>
+                <th>Wiek</th>
+                <th>Akcja</th>
             </tr>
         </thead>
         <tbody>
             {% for user in users %}
             <tr id="row-{{ user[0] }}">
+                <!-- Update Form -->
                 <form method="POST" action="{{ url_for('update_user', user_id=user[0]) }}">
                     <td>{{ user[0] }}</td>
                     <td><input type="text" name="name" value="{{ user[1] }}" data-original-value="{{ user[1] }}"
@@ -76,26 +177,28 @@
                             disabled></td>
                     <td>
                         <button type="button" id="edit-btn-{{ user[0] }}"
-                            onclick="enableEdit({{ user[0] }})">Edit</button>
-                        <button type="submit" id="confirm-btn-{{ user[0] }}" style="display:none;">Confirm</button>
+                            onclick="enableEdit({{ user[0] }})">Edytuj</button>
+                        <button type="submit" id="confirm-btn-{{ user[0] }}" style="display:none;">Potwierdz</button>
                         <button type="button" id="cancel-btn-{{ user[0] }}" onclick="cancelEdit({{ user[0] }})"
-                            style="display:none;">Cancel</button>
-                        <form method="POST" action="{{ url_for('delete_user', user_id=user[0]) }}"
-                            style="display:inline;">
-                            <button type="submit">Delete</button>
-                        </form>
+                            style="display:none;">Anuluj</button>
                     </td>
                 </form>
+                <!-- Delete Form -->
+                <td>
+                    <form method="POST" action="{{ url_for('delete_user', user_id=user[0]) }}">
+                        <button type="submit">Usuń</button>
+                    </form>
+                </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
-    <h2>Add New User</h2>
+    <h2>Dodawanie nowego użytkownika</h2>
     <form method="POST" action="{{ url_for('add_user') }}">
         <input type="text" name="name" placeholder="Name" required>
         <input type="text" name="surname" placeholder="Surname" required>
         <input type="number" name="age" placeholder="Age" required>
-        <button type="submit">Add User</button>
+        <button type="submit">Dodaj użytkownika>
     </form>
 </body>
 

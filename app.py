@@ -82,5 +82,16 @@ def delete_user(user_id):
     return redirect(url_for('index'))
 
 
+@app.route('/about')
+def about():
+    try:
+        with open(__file__, 'r') as f:
+            code = f.read()
+    except Exception as e:
+        code = f"Unable to load code: {e}"
+
+    return render_template('about.html', code=code)
+
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0')
